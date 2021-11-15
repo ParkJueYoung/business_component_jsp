@@ -18,8 +18,8 @@ public class PhysicalDAO {
 	private PreparedStatement stmt = null;
 	private ResultSet rs = null;
 
-	private final String PHYSICAL_INSERT = "insert into physical(seq, weight, height, blood, gender) values((select nvl(max(seq), 0)+1 from physical),?,?,?,?)";
-	private final String PHYSICAL_UPDATE = "update into physical set weight = ? height = ?";
+	private final String PHYSICAL_INSERT = "insert into physical(seq, height, weight, blood, gender) values((select nvl(max(seq), 0)+1 from physical),?,?,?,?)";
+	private final String PHYSICAL_UPDATE = "update physical set height = ?, weight = ? where seq = ?";
 	private final String PHYSICAL_DELETE = "delete physical where seq = ?";
 	private final String PHYSICAL_GET = "select * from physical where seq = ?";
 	private final String PHYSICAL_LIST = "select * from physical order by seq desc";
@@ -30,8 +30,8 @@ public class PhysicalDAO {
 		try {
 			conn = JDBCUtil.getConnection();
 			stmt = conn.prepareStatement(PHYSICAL_INSERT);
-			stmt.setString(1, vo.getWeight());
-			stmt.setString(2, vo.getHeight());
+			stmt.setString(1, vo.getHeight());
+			stmt.setString(2, vo.getWeight());
 			stmt.setString(3, vo.getBlood());
 			stmt.setString(4, vo.getGender());
 			stmt.executeUpdate();
@@ -48,8 +48,11 @@ public class PhysicalDAO {
 		try {
 			conn = JDBCUtil.getConnection();
 			stmt = conn.prepareStatement(PHYSICAL_UPDATE);
-			stmt.setString(1, vo.getWeight());
 			stmt.setString(1, vo.getHeight());
+			stmt.setString(2, vo.getWeight());
+			stmt.setInt(3, vo.getSeq());
+			stmt.executeUpdate();
+			System.out.println("정상작동");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
